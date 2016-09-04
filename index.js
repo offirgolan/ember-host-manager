@@ -20,11 +20,11 @@ module.exports = {
 
   config: function(environment) {
     var configDirectory = path.dirname(this.project.configPath());
-    var fullPath = path.join(configDirectory, 'hosts.js');
+    var hostsConfig = path.join(configDirectory, 'hosts.js');
 
     return {
       'host-manager': {
-        hosts: require(fullPath)(environment)
+        hosts: require(hostsConfig)(environment)
       }
     };
   }
