@@ -77,7 +77,7 @@ There are two ways you can access the current host config:
 **1. Import**
 
 ```js
-import host from '../config/host';
+import host from 'ember-host-manager';
 ```
 
 **1. Service**

@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import host from '../config/host';
+import host from 'ember-host-manager';
 
 export default Ember.Controller.extend({
   hostManager: Ember.inject.service(),
