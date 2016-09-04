@@ -7,13 +7,15 @@ module.exports = {
   name: 'ember-host-manager',
 
   included: function(app) {
+    // START - Code required to get ember-get-config to work
+    // https://github.com/null-null-null/ember-get-config#usage
     while (app.app) {
       app = app.app;
     }
 
     this.eachAddonInvoke('included', [app]);
-
     this._super.included.apply(this, [app]);
+    // END
   },
 
   config: function(environment) {
@@ -21,8 +23,8 @@ module.exports = {
     var fullPath = path.join(configDirectory, 'hosts.js');
 
     return {
-      HOST_MANAGER: {
-        HOSTS: require(fullPath)(environment)
+      'host-manager': {
+        hosts: require(fullPath)(environment)
       }
     };
   }
