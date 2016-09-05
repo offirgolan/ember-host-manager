@@ -2,12 +2,20 @@
 
 [![Build Status](https://travis-ci.org/offirgolan/ember-host-manager.svg)](https://travis-ci.org/offirgolan/ember-host-manager)
 [![npm version](https://badge.fury.io/js/ember-host-manager.svg)](http://badge.fury.io/js/ember-host-manager)
-[![Code Climate](https://codeclimate.com/github/offirgolan/ember-host-manager/badges/gpa.svg)](https://codeclimate.com/github/offirgolan/ember-host-manager)
-[![Test Coverage](https://codeclimate.com/github/offirgolan/ember-host-manager/badges/coverage.svg)](https://codeclimate.com/github/offirgolan/ember-host-manager/coverage)
 [![Dependency Status](https://david-dm.org/offirgolan/ember-host-manager.svg)](https://david-dm.org/offirgolan/ember-host-manager)
 [![devDependency Status](https://david-dm.org/offirgolan/ember-host-manager/dev-status.svg)](https://david-dm.org/offirgolan/ember-host-manager#info=devDependencies)
 
-Host management solution for ember apps
+Host management solution for ambitious Ember applications
+
+## Features
+
+- Easily manage different host configurations
+  - Specify different API settings
+  - Declare feature flags for specific hosts / environments
+- Access the current host config anywhere in your app
+- Fallback config if nothing matches
+- Test configuration
+  - Simple mirage integration
 
 ## Installation
 
@@ -17,7 +25,7 @@ ember install ember-host-manager
 
 ## Helpful Links
 
-- ### [Changelog](CHANGELOG.md)
+- [Changelog](CHANGELOG.md)
 
 ## Looking for help?
 
@@ -25,12 +33,10 @@ If it is a bug [please open an issue on GitHub](http://github.com/offirgolan/emb
 
 ## Usage
 
-In this example we are gonna setup 3 environments for our Ember app (`dev`, `staging`, and `prod`).
+### Hosts Configuration
 
-### Setup the hosts config
-
-When you install this addon, a file called `hosts.js` will be created under the **config** directory. This is where we define
-all our different hosts and their appropriate configs
+When you install this addon, a `config/hosts.js` file will be created which will hold all the different hosts and their
+configurations.
 
 It will look something like this:
 
@@ -51,26 +57,65 @@ module.exports = function(/* environment */) {
 };
 ```
 
-Lets add our host specific configurations
+Lets add some development host configurations so we can easily connect to different APIs while testing our app.
 
 ```js
-'dev.myapp.com:4200': {
-  apiHost: 'http://myapp.dev.api/',
-  apiNamespace: 'v2'
-},
+module.exports = function(/* environment */) {
+  return {
+    /* Fallback to prod */
+    'default': {
+      apiHost: 'http://myapp.prod.api/',
+      apiNamespace: 'v2'
+    },
 
-'stg.myapp.com:4200': {
-  apiHost: 'http://myapp.stg.api/',
-  apiNamespace: 'v2'
-},
+    /* Use mirage in tests with `api` namespace */
+    'test': {
+      apiHost: '',
+      apiNamespace: 'api'
+    },
 
-'prod.myapp.com:4200': {
-  apiHost: 'http://myapp.prod.api/',
-  apiNamespace: 'v2'
-}
+    /* Dev Hosts */
+    'dev.myapp.com:4200': {
+      apiHost: 'http://myapp.dev.api/',
+      apiNamespace: 'v2'
+    },
+
+    'stg.myapp.com:4200': {
+      apiHost: 'http://myapp.stg.api/',
+      apiNamespace: 'v2'
+    },
+
+    'prod.myapp.com:4200': {
+      apiHost: 'http://myapp.prod.api/',
+      apiNamespace: 'v2'
+    },
+
+    /* Production Hosts */
+    'myapp.com' {
+      apiHost: 'http://myapp.prod.api/',
+      apiNamespace: 'v2'
+    },
+
+    'myapp.com:443' {
+      apiHost: 'https://myapp.prod.api/',
+      apiNamespace: 'v2'
+    }
+  };
+};
 ```
 
-### Access the host config
+__Note:__ _You will need to add the following to your `/etc/hosts` config to get the 
+dev hosts to work. Once done, you can open your browser and navigate to any of the
+3 specified hosts which will then use their appropriate config._
+
+```bash
+# MyApp Dev Environments
+localhost dev.myapp.com
+localhost stg.myapp.com
+localhost prod.myapp.com
+```
+
+### Access the Host Config
 
 There are two ways you can access the current host config:
 
@@ -95,17 +140,20 @@ export default DS.RESTAdapter.extend({
 });
 ```
 
-### Modify /etc/hosts
+### The Host Manager Service
 
-Don't forget to add your environments to your `/etc/hosts` file!
+The Host Manager service not only gives you access to the current host via the `host`
+property, but allows you to get any host config via the `getHost` method.
 
-```bash
-sudo vim /etc/hosts
-```
+```js
+export default Ember.Controller.extend({
+  hostManager: Ember.inject.service(),
 
-```bash
-# MyApp Environments
-localhost dev.myapp.com
-localhost stg.myapp.com
-localhost prod.myapp.com
+  init() {
+    this._super(...arguments);
+
+    const prodHost = this.get('hostManager').getHost('myapp.com');
+    this.set('someProp', prodHost.get('someProp'));
+  }
+});
 ```
