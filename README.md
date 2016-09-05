@@ -57,7 +57,7 @@ module.exports = function(/* environment */) {
 };
 ```
 
-Lets add some development host configurations so we can easily connect to different APIs while testing our app.
+Lets add some host configurations for our dev and prod environments. 
 
 ```js
 module.exports = function(/* environment */) {
@@ -74,7 +74,12 @@ module.exports = function(/* environment */) {
       apiNamespace: 'api'
     },
 
-    /* Dev Hosts */
+    /*
+      Dev Hosts
+
+      These must be added to /etc/hosts and mapped
+      to localhost
+    */
     'dev.myapp.com:4200': {
       apiHost: 'http://myapp.dev.api/',
       apiNamespace: 'v2'
@@ -104,7 +109,7 @@ module.exports = function(/* environment */) {
 };
 ```
 
-__Note:__ _You will need to add the following to your `/etc/hosts` config to get the 
+__Note:__ _You will need to add the following to your `/etc/hosts` config to get the
 dev hosts to work. Once done, you can open your browser and navigate to any of the
 3 specified hosts which will then use their appropriate config._
 
