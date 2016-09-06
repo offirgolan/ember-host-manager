@@ -19,18 +19,21 @@ module.exports = {
   },
 
   config: function(environment) {
-    var configDirectory = path.dirname(this.project.configPath());
-    var hostsConfig = path.join(configDirectory, 'hosts.js');
-    var hosts = [];
-
-    try {
-      hosts = require(hostsConfig)(environment);
-    } catch(e) {}
-
     return {
       'host-manager': {
-        hosts: hosts
+        hosts: this._getHosts(environment),
       }
     };
+  },
+
+  _getHosts(environment) {
+    var configDirectory = path.dirname(this.project.configPath());
+    var hostsConfig = path.join(configDirectory, 'hosts.js');
+
+    try {
+      return require(hostsConfig)(environment);
+    } catch(e) {
+      return {};
+    }
   }
 };

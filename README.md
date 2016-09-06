@@ -44,6 +44,14 @@ It will look something like this:
 module.exports = function(/* environment */) {
   return {
     /*
+      If present, the host configuration will be pulled based on the given
+      string.
+
+      ex) `APP_HOST=myapp.com ember s`
+     */
+    //hostOverride: process.env.APP_HOST,
+
+    /*
       If the host doesn't resolve to any of the defined configs here,
       this will be the config used
      */
@@ -57,7 +65,7 @@ module.exports = function(/* environment */) {
 };
 ```
 
-Lets add some host configurations for our dev and prod environments. 
+Lets add some host configurations for our dev and prod environments.
 
 ```js
 module.exports = function(/* environment */) {
@@ -120,14 +128,18 @@ localhost stg.myapp.com
 localhost prod.myapp.com
 ```
 
-### Access the Host Config
+### Accessing the Host Config
 
 There are two ways you can access the current host config:
 
 **1. Import**
 
 ```js
+// Get the current host
 import host from 'ember-host-manager';
+
+// Get all available hosts
+import { hosts } from 'ember-host-manager'
 ```
 
 **1. Service**

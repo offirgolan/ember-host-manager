@@ -1,6 +1,5 @@
 import Ember from 'ember';
-import config from 'ember-get-config';
-import host from 'ember-host-manager';
+import {default as host, hosts } from 'ember-host-manager';
 
 const {
   computed
@@ -12,7 +11,6 @@ export default Ember.Service.extend({
   }).readOnly(),
 
   getHost(hostName) {
-    const hosts = config['host-manager'].hosts;
     return hosts[hostName];
   }
 });

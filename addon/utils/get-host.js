@@ -1,12 +1,19 @@
+import Ember from 'ember';
 import config from 'ember-get-config';
+import { hosts } from 'ember-host-manager';
+
+const {
+  isPresent
+} = Ember;
 
 export default function getHost(hostName) {
-  const hosts = config['host-manager'].hosts;
   const env = config.environment;
+
+  hostName = isPresent(hosts.hostOverride) ? hosts.hostOverride : hostName;
 
   if(env === 'test') {
     return hosts['test'];
-  } else {
-    return hosts[hostName] || hosts['default'];
   }
+
+  return hosts[hostName] || hosts['default'];
 }
