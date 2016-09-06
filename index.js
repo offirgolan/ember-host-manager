@@ -26,7 +26,7 @@ module.exports = {
     };
   },
 
-  _getHosts(environment) {
+  _getHosts: function(environment) {
     var configDirectory = path.dirname(this.project.configPath());
     var hostsConfig = path.join(configDirectory, 'hosts.js');
 
