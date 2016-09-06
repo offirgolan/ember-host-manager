@@ -12,7 +12,9 @@ Host management solution for ambitious Ember applications
 - Easily manage different host configurations
   - Specify different API settings
   - Declare feature flags for specific hosts / environments
+  - and much more!
 - Access the current host config anywhere in your app
+- Host override allows you to grab your host name from anywhere
 - Fallback config if nothing matches
 - Test configuration
   - Simple mirage integration
