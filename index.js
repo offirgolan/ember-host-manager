@@ -21,10 +21,15 @@ module.exports = {
   config: function(environment) {
     var configDirectory = path.dirname(this.project.configPath());
     var hostsConfig = path.join(configDirectory, 'hosts.js');
+    var hosts = [];
+
+    try {
+      hosts = require(hostsConfig)(environment);
+    } catch(e) {}
 
     return {
       'host-manager': {
-        hosts: require(hostsConfig)(environment)
+        hosts: hosts
       }
     };
   }
